@@ -6,25 +6,27 @@ import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "./PriceConverter.sol";
 
 // 3. Interfaces, Libraries, Contracts
-error FundMe__NotOwner();
+error FundMe__NotOwner(); // For Errors add Contract Name along with the error name
 
 /**@title A sample Funding Contract
- * @author Patrick Collins
+ * @author Anugrah Yadav
  * @notice This contract is for creating a sample funding contract
  * @dev This implements price feeds as our library
  */
 contract FundMe {
     // Type Declarations
-    using PriceConverter for uint256;
+    using PriceConverter for uint256; // This determines that we can use the priceConverter as a library valid for uint256 data
+    // type.
 
     // State variables
-    uint256 public constant MINIMUM_USD = 50 * 10**18;
+    uint256 public constant MINIMUM_USD = 50 * 10 ** 18;
     address private immutable i_owner;
     address[] private s_funders;
     mapping(address => uint256) private s_addressToAmountFunded;
     AggregatorV3Interface private s_priceFeed;
 
-    // Events (we have none!)
+    // Events (we have none!) - we can put up the event of owner check for example if someone tries to access private methods
+    // we can call a function for checking the caller of the function and if not owner we can call an event.
 
     // Modifiers
     modifier onlyOwner() {
@@ -34,19 +36,27 @@ contract FundMe {
     }
 
     // Functions Order:
-    //// constructor
-    //// receive
-    //// fallback
-    //// external
-    //// public
-    //// internal
-    //// private
-    //// view / pure
+    // constructor
+    // receive
+    // fallback
+    // external
+    // public
+    // internal
+    // private
+    // view / pure
 
     constructor(address priceFeed) {
         s_priceFeed = AggregatorV3Interface(priceFeed);
         i_owner = msg.sender;
     }
+
+    // receive() external payable {
+    //     fund();
+    // }
+
+    // fallback() external payable {
+    //     fund();
+    // }
 
     /// @notice Funds our contract based on the ETH/USD price
     function fund() public payable {
@@ -96,11 +106,9 @@ contract FundMe {
      *  @param fundingAddress the address of the funder
      *  @return the amount funded
      */
-    function getAddressToAmountFunded(address fundingAddress)
-        public
-        view
-        returns (uint256)
-    {
+    function getAddressToAmountFunded(
+        address fundingAddress
+    ) public view returns (uint256) {
         return s_addressToAmountFunded[fundingAddress];
     }
 

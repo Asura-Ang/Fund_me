@@ -14,7 +14,7 @@ const { developmentChains } = require("../../helper-hardhat-config")
               // deployer = accounts[0]
               deployer = (await getNamedAccounts()).deployer
               await deployments.fixture(["all"])
-              fundMe = await ethers.getContract("FundMe", deployer)
+              fundMe = await ethers.getContract("FundMe", deployer) // here due to this the fundMe is connected to the deployer account
               mockV3Aggregator = await ethers.getContract(
                   "MockV3Aggregator",
                   deployer
@@ -51,6 +51,7 @@ const { developmentChains } = require("../../helper-hardhat-config")
                   assert.equal(response, deployer)
               })
           })
+
           describe("withdraw", function () {
               beforeEach(async () => {
                   await fundMe.fund({ value: sendValue })
@@ -92,7 +93,7 @@ const { developmentChains } = require("../../helper-hardhat-config")
                   for (i = 1; i < 6; i++) {
                       const fundMeConnectedContract = await fundMe.connect(
                           accounts[i]
-                      )
+                      ) // Now here we are making a new connection of fundMe contract with connect option with other different accounts
                       await fundMeConnectedContract.fund({ value: sendValue })
                   }
                   const startingFundMeBalance =
@@ -115,6 +116,7 @@ const { developmentChains } = require("../../helper-hardhat-config")
                   )
                   const endingDeployerBalance =
                       await fundMe.provider.getBalance(deployer)
+
                   // Assert
                   assert.equal(
                       startingFundMeBalance
@@ -134,6 +136,7 @@ const { developmentChains } = require("../../helper-hardhat-config")
                       )
                   }
               })
+
               it("Only allows the owner to withdraw", async function () {
                   const accounts = await ethers.getSigners()
                   const fundMeConnectedContract = await fundMe.connect(

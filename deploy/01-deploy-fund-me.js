@@ -10,7 +10,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
 
     let ethUsdPriceFeedAddress
     if (chainId == 31337) {
-        const ethUsdAggregator = await deployments.get("MockV3Aggregator")
+        const ethUsdAggregator = await deployments.get("MockV3Aggregator") // MockV3Aggregator is actually a proxy for chainlink data feed.
         ethUsdPriceFeedAddress = ethUsdAggregator.address
     } else {
         ethUsdPriceFeedAddress = networkConfig[chainId]["ethUsdPriceFeed"]
@@ -22,7 +22,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
         args: [ethUsdPriceFeedAddress],
         log: true,
         // we need to wait if on a live network so we can verify properly
-        waitConfirmations: network.config.blockConfirmations || 1,
+        waitConfirmations: network.config.blockConfirmations || 1, // this helps us to wait for the block confirmations for our contract.
     })
     log(`FundMe deployed at ${fundMe.address}`)
 
